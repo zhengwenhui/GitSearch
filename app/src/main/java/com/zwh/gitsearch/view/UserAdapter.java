@@ -9,37 +9,64 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zwh.gitsearch.R;
+import com.zwh.gitsearch.bean.LanguageBean;
 import com.zwh.gitsearch.bean.UsersBean;
+import com.zwh.gitsearch.presenter.RepoPresenter;
 
 /**
  * Created by zhengwenhui on 14/03/2017.
  */
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewItem> {
-    private UsersBean usersBean;
-    private Context context;
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewItem> implements IRepoView {
+    private UsersBean mUsersBean;
+    private Context mContext;
+    private RepoPresenter mRepoPresenter;
 
     public UserAdapter(Context context, UsersBean users) {
-        this.usersBean = users;
-        this.context = context;
+        this.mUsersBean = users;
+        this.mContext = context;
+        mRepoPresenter = new RepoPresenter(this);
     }
 
     @Override
     public UserAdapter.ViewItem onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewItem(View.inflate(context, R.layout.user_info_item, null));
+        return new ViewItem(View.inflate(mContext, R.layout.user_info_item, null));
     }
 
     @Override
     public void onBindViewHolder(ViewItem holder, int position) {
-        UsersBean.ItemsEntity itemsEntity = usersBean.getItems().get(position);
+        UsersBean.ItemsEntity itemsEntity = mUsersBean.getItems().get(position);
 
         holder.mUserName.setText(itemsEntity.getLogin());
-        Glide.with(context).load(itemsEntity.getAvatar_url()).into(holder.mAvatar);
+        Glide.with(mContext).load(itemsEntity.getAvatar_url()).into(holder.mAvatar);
+
+        LanguageBean languageBean = itemsEntity.getLanguageBean();
+        if (languageBean == null) {
+            mRepoPresenter.loadRepos(itemsEntity.getLogin());
+
+            holder.mLanguage.setText(null);
+            holder.mMostLanguage.setText(null);
+        } else {
+            holder.mLanguage.setText(languageBean.getLanguage());
+            holder.mMostLanguage.setText(languageBean.getMostUsedLanguage());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return usersBean == null ? 0 : usersBean.getItems().size();
+        return mUsersBean == null ? 0 : mUsersBean.getItems().size();
+    }
+
+
+    @Override
+    public void setRepo(LanguageBean languageBean) {
+        for (UsersBean.ItemsEntity itemsEntity : mUsersBean.getItems()) {
+            if (itemsEntity.getLogin().equals(languageBean.getLogin())) {
+                itemsEntity.setLanguageBean(languageBean);
+                this.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
     public static class ViewItem extends RecyclerView.ViewHolder {

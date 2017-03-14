@@ -40,6 +40,15 @@ public class UsersBean {
         private String login;
         private String avatar_url;
         private String repos_url;
+        private LanguageBean languageBean;
+
+        public LanguageBean getLanguageBean() {
+            return languageBean;
+        }
+
+        public void setLanguageBean(LanguageBean languageBean) {
+            this.languageBean = languageBean;
+        }
 
         public String getLogin() {
             return login;

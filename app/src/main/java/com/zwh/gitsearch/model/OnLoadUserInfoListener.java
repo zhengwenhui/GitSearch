@@ -8,5 +8,6 @@ import com.zwh.gitsearch.bean.UsersBean;
 
 public interface OnLoadUserInfoListener {
     void onSuccess(UsersBean usersBean);
+
     void onFailure();
 }

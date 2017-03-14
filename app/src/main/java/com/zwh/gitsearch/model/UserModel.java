@@ -12,20 +12,20 @@ import com.zwh.gitsearch.utils.StringHttpResponseHandler;
 
 public class UserModel implements IUserModel {
     private static final String SEARCH_USERS = "https://api.github.com/search/users?q=%s";
-    private OnLoadUserInfoListener userLoadResult;
+    private OnLoadUserInfoListener mOnLoadUserInfoListener;
 
     public UserModel(OnLoadUserInfoListener result) {
-        userLoadResult = result;
+        mOnLoadUserInfoListener = result;
     }
 
     @Override
-    public void load(String userName) {
+    public void loadUsers(String userName) {
 
         PostClient.setUserAgent("Awesome-Octocat-App");
         PostClient.get(String.format(SEARCH_USERS, userName), new StringHttpResponseHandler() {
             @Override
             public void onFailure(String responseString, Throwable throwable) {
-                userLoadResult.onFailure();
+                mOnLoadUserInfoListener.onFailure();
             }
 
             @Override
@@ -35,13 +35,9 @@ public class UserModel implements IUserModel {
         });
     }
 
-    @Override
-    public void save(UsersBean userBean) {
-    }
-
     private void parseUsersInfo(String responseString) {
         UsersBean usersBean = new Gson().fromJson(responseString, new TypeToken<UsersBean>() {
         }.getType());
-        userLoadResult.onSuccess(usersBean);
+        mOnLoadUserInfoListener.onSuccess(usersBean);
     }
 }

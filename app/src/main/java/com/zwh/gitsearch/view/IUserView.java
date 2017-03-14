@@ -7,7 +7,5 @@ import com.zwh.gitsearch.bean.UsersBean;
  */
 
 public interface IUserView {
-    UsersBean getUser();
-
     void setUser(UsersBean user);
 }

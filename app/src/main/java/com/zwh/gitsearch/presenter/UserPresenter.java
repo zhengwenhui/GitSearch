@@ -11,25 +11,26 @@ import com.zwh.gitsearch.view.IUserView;
  */
 
 public class UserPresenter implements OnLoadUserInfoListener {
-    private IUserModel userModel;
-    private IUserView userView;
+    private IUserModel mUserModel;
+    private IUserView mUserView;
 
     public UserPresenter(IUserView view) {
-        userView = view;
-        userModel = new UserModel(this);
+        mUserView = view;
+        mUserModel = new UserModel(this);
     }
 
     public void loadUser(String userName) {
-        userModel.load(userName);
+        mUserModel.loadUsers(userName);
     }
+
 
     @Override
     public void onSuccess(UsersBean usersBean) {
-        userView.setUser(usersBean);
+        mUserView.setUser(usersBean);
     }
 
     @Override
     public void onFailure() {
-        userView.setUser(null);
+        mUserView.setUser(null);
     }
 }

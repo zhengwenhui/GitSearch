@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GitSearch</string>
+    <string name="input_user_name">输入用户名</string>
+    <string name="find_nothing">什么都查不到</string>
+</resources>
